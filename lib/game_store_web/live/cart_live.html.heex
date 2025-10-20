@@ -1,0 +1,46 @@
+<h1 class="text-2xl font-bold">Carro</h1>
+
+<%= if @cart && @cart.items != [] do %>
+  <table class="mt-4 w-full">
+    <thead>
+      <tr>
+        <th>Juego</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <%= for it <- @totals.items do %>
+        <tr>
+          <td><%= it.product.title %></td>
+          <td>
+            <button phx-click="dec" phx-value-id={it.id} class="px-2 py-1 border rounded">-</button>
+            <%= it.quantity %>
+            <button phx-click="inc" phx-value-id={it.id} class="px-2 py-1 border rounded">+</button>
+          </td>
+
+          <!-- ANTES: $<%= div(it.quantity * it.product.price_cents, 100) %> -->
+          <td><%= GameStoreWeb.MoneyHelpers.clp(it.quantity * it.product.price_cents) %></td>
+
+          <td>
+            <button phx-click="del" phx-value-id={it.id} class="text-red-600 hover:underline">
+              Eliminar
+            </button>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <!-- ANTES: Total: $<%= div(@totals.subtotal_cents, 100) %> -->
+  <p class="mt-4 font-semibold text-right">
+    Total: <%= GameStoreWeb.MoneyHelpers.clp(@totals.subtotal_cents) %>
+  </p>
+<% else %>
+  <p class="mt-4">Tu carro está vacío.</p>
+<% end %>
+
+<a href="/" class="inline-block mt-6 underline hover:text-blue-600">
+  Seguir comprando
+</a>
