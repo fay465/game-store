@@ -1,16 +1,21 @@
 site:
   title: Game Store Docs
   start_page: game-store::index.adoc
+
 content:
   sources:
     - url: .
-      branches: HEAD
+      branches: main
       start_path: docs
+      worktrees: true   # 👈 esto evita el error de "must be a git repository"
+
 ui:
   bundle:
     url: https://raw.githubusercontent.com/NinjasCL/antora-docs-bootstrap/main/ui-bundle.zip
     snapshot: true
+
 output:
   dir: ./build/site
+
 runtime:
   fetch: true
