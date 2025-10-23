@@ -27,3 +27,6 @@ priv/repo/*.db-wal
 
 # Otros
 .DS_Store
+priv/repo/*.db
+priv/repo/*.db-shm
+priv/repo/*.db-wal
