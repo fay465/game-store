@@ -1,5 +1,5 @@
 defmodule GameStore.Cart do
-  import Ecto.Query, warn: false
+  import Ecto.Query, only: [from: 2]
   alias GameStore.Repo
 
   # 👇 Alias a los ESQUEMAS (no al contexto)
@@ -104,14 +104,45 @@ defmodule GameStore.Cart do
   end
 
   # Checkout
-  def checkout(token) do
-    case Repo.get_by(Cart, token: token) do
-      nil -> {:error, :not_found}
-      %Cart{status: "closed"} -> {:error, :already_closed}   # <- sin variable
-      %Cart{} = cart ->
-        cart
-        |> Cart.changeset(%{status: "closed"})
-        |> Repo.update()
-    end
-  end
+	def checkout(token) do
+	  case Repo.get_by(Cart, token: token) do
+	    nil ->
+	      {:error, :not_found}
+
+	    %Cart{status: "closed"} ->
+	      {:error, :already_closed}
+
+	    %Cart{} = cart ->
+	      Repo.transaction(fn ->
+	        # 1) Descontar stock de cada item del carro
+	        items =
+	          from(i in CartItem, where: i.cart_id == ^cart.id)
+	          |> Repo.all()
+
+	        Enum.each(items, fn i ->
+	          {updated, _} =
+	            from(p in Product, where: p.id == ^i.product_id and p.stock >= ^i.quantity)
+	            |> Repo.update_all(inc: [stock: -i.quantity])
+
+	          if updated != 1 do
+	            Repo.rollback({:insufficient_stock_on_checkout, i.product_id})
+	          end
+	        end)
+
+	        # 2) Cerrar carro
+	        {:ok, cart} =
+	          cart
+	          |> Cart.changeset(%{status: "closed"})
+	          |> Repo.update()
+
+	        cart
+	      end)
+	      |> case do
+	        {:ok, cart} -> {:ok, cart}
+	        {:error, :already_closed} -> {:error, :already_closed}
+	        {:error, {:insufficient_stock_on_checkout, _pid}} -> {:error, :insufficient_stock}
+	        {:error, _} -> {:error, :checkout_failed}
+	      end
+	  end
+	end
 end

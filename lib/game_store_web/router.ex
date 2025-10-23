@@ -36,7 +36,7 @@ defmodule GameStoreWeb.Router do
   scope "/", GameStoreWeb do
     pipe_through :browser
     live "/", CatalogLive, :index
-    live "/cart", CartLive, :show
+    live "/cart", CartHyperLive, :show
   end
 
   # Other scopes may use custom stacks.
@@ -60,16 +60,25 @@ defmodule GameStoreWeb.Router do
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
 
-    defp ensure_cart_token(conn, _opts) do
-      case get_session(conn, :cart_token) do
-        nil ->
-          token = Ecto.UUID.generate()
-          GameStore.Cart.get_or_create_cart(token)
-          put_session(conn, :cart_token, token)
-        token ->
-          GameStore.Cart.get_or_create_cart(token)
-          conn
+  defp ensure_cart_token(conn, _opts) do
+    case get_session(conn, :cart_token) do
+      nil ->
+        token = Ecto.UUID.generate()
+        GameStore.Cart.get_or_create_cart(token)
+        put_session(conn, :cart_token, token)
+
+      token ->
+        case GameStore.Cart.fetch_cart(token) do
+          %GameStore.Cart.Cart{status: "closed"} ->
+            # si el carro está cerrado, generamos uno nuevo y lo guardamos en sesión
+            new = Ecto.UUID.generate()
+            GameStore.Cart.get_or_create_cart(new)
+            put_session(conn, :cart_token, new)
+
+          _ ->
+            conn
         end
-     end
+    end
   end
+end
 end

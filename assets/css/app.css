@@ -1,3 +1,29 @@
+/* Tipografías retro */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400..700&display=swap');
+
+/* Helpers simples */
+.font-retro { font-family: 'Press Start 2P', system-ui, sans-serif; }
+.font-8bit  { font-family: 'VT323', ui-monospace, monospace; }
+
+/* Paleta base (oscura) */
+:root{
+  --bg: #0b1020;      /* fondo */
+  --panel: #111827;   /* slate-900 */
+  --text: #e5e7eb;    /* slate-200 */
+  --muted:#94a3b8;    /* slate-400 */
+  --acc: #22d3ee;     /* cyan-400 */
+  --acc-2:#f0abfc;    /* fuchsia-300 */
+  --danger:#fb7185;   /* rose-400 */
+}
+
+body { background-color: var(--bg); color: var(--text); }
+.text-muted { color: var(--muted); }
+.text-acc   { color: var(--acc); }
+.bg-panel   { background-color: var(--panel); }
+.btn-acc    { background-color: var(--acc); color: #0b1020; }
+.btn-acc:hover { filter: brightness(1.1); }
+.btn-danger { color: var(--danger); }
+
 /* See the Tailwind configuration guide for advanced usage
    https://tailwindcss.com/docs/configuration */
 

@@ -30,7 +30,8 @@
       })();
     </script>
   </head>
-  <body>
+  <body class="antialiased min-h-screen bg-[var(--bg)] text-[var(--text)]">
     {@inner_content}
+    <.flash_group flash={@flash} />
   </body>
 </html>
