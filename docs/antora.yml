@@ -1,0 +1,5 @@
+name: game-store
+title: Game Store
+version: 1.0
+nav:
+  - modules/ROOT/nav.adoc

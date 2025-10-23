@@ -1,0 +1,21 @@
+name: Build & Publish Antora
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm i -g @antora/cli @antora/site-generator
+      - run: antora docs/antora-playbook.yml
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/site
+          publish_branch: gh-pages

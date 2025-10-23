@@ -1,0 +1,16 @@
+site:
+  title: Game Store Docs
+  start_page: game-store::index.adoc
+content:
+  sources:
+    - url: .
+      branches: HEAD
+      start_path: docs
+ui:
+  bundle:
+    url: https://raw.githubusercontent.com/NinjasCL/antora-docs-bootstrap/main/ui-bundle.zip
+    snapshot: true
+output:
+  dir: ./build/site
+runtime:
+  fetch: true

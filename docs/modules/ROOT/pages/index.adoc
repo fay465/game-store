@@ -1,0 +1,4 @@
+= Game Store – Prototipo Ecommerce (Videojuegos)
+:revdate: {docdate}
+
+Resumen del proyecto (MVP carrito, Phoenix+LiveView, SQLite). Documentación generada con Antora.
