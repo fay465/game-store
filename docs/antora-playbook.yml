@@ -4,10 +4,9 @@ site:
 
 content:
   sources:
-    - url: .
+    - url: https://github.com/fay465/game-store.git
       branches: main
       start_path: docs
-      worktrees: true   # 👈 esto evita el error de "must be a git repository"
 
 ui:
   bundle:
