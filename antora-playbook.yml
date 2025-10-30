@@ -1,13 +1,14 @@
 site:
   title: Example Documentation
   url: https://ninjascl.github.io/antora-docs-bootstrap
-  start_page: "ROOT::index.adoc"
+  start_page: "game-store-docs::index.adoc"
 
 content:
   sources:
     - url: .
-      branches: HEAD
-      start_path: .
+      branches: main
+      start_path:
+        - .
 
 antora:
   extensions:

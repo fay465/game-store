@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Diseño de Endpoint REST (Carro) :: Example Documentation</title>
+    <link rel="canonical" href="https://ninjascl.github.io/antora-docs-bootstrap/game-store-docs/1/endpoint_rest.html">
+    <link rel="prev" href="base_de_datos.html">
+    <link rel="next" href="costos.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../_/css/site.css">
+    <link rel="stylesheet" href="../../_/js/vendor/styles/monokai.css">  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://ninjascl.github.io/antora-docs-bootstrap">Example Documentation</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Buscar">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <!--
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+    -->
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="game-store-docs" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="index.html">Game Store - Documentación</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Resumen</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="servidor.html">Selección de Servidor</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="base_de_datos.html">Diseño de Base de Datos</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="endpoint_rest.html">Diseño de Endpoint REST</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="costos.html">Estimación de Costos</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="backend.html">Selección Tecnológica Backend</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="frontend.html">Selección Tecnológica Frontend</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="equipo.html">Profesionales necesarios</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="plazos.html">Estimación de Plazos</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="diseno_sistemas.html">Diseño de Sistemas</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Game Store - Documentación</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="index.html">Game Store - Documentación</a></div>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Game Store - Documentación</a></li>
+    <li><a href="endpoint_rest.html">Diseño de Endpoint REST</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/./modules/ROOT/pages/endpoint_rest.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contenidos" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Diseño de Endpoint REST (Carro)</h1>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#endpoints">Endpoints</a></li>
+<li><a href="#json-ejemplo-de-carro">JSON (ejemplo de carro)</a></li>
+<li><a href="#secuencia-agregar-ítem">Secuencia (Agregar ítem)</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="endpoints"><a class="anchor" href="#endpoints"></a>Endpoints</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 16.667%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Método</th>
+<th class="tableblock halign-left valign-top">Ruta</th>
+<th class="tableblock halign-left valign-top">Descripción</th>
+<th class="tableblock halign-left valign-top">Body</th>
+<th class="tableblock halign-left valign-top">Respuesta OK</th>
+<th class="tableblock halign-left valign-top">Errores</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/carts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Crea un carro (token)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{ "token": "uuid" }</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">422</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">GET</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/carts/{token}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Muestra carro + totales</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{ token, status, items[], subtotal_cents }</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DELETE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/carts/{token}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Vacía el carro (mantiene abierto)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{ "ok": true }</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/carts/{token}/items</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Agrega ítem</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{ "product_id": int, "quantity": int }</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Carro serializado</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400, 404, 409(stock), 422</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">PATCH</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/carts/{token}/items/{id}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Actualiza cantidad</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{ "quantity": int }</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Carro serializado</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">400, 404, 409(stock), 422</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DELETE</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/carts/{token}/items/{id}</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Elimina ítem</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Carro serializado</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">POST</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">/api/carts/{token}/checkout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cierra carro (descuenta stock)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">—</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{ "ok": true }</code> + estado <code>closed</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">404, 409(stock), 422</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="json-ejemplo-de-carro"><a class="anchor" href="#json-ejemplo-de-carro"></a>JSON (ejemplo de carro)</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code class="language-json hljs" data-lang="json">{
+  "token": "0679032a-4053-4b0d-ac94-44419b8bc557",
+  "status": "open",
+  "items": [
+    { "id": 1, "product_id": 1, "title": "Elden Ring",
+      "quantity": 3, "unit_cents": 39900, "line_cents": 119700 }
+  ],
+  "subtotal_cents": 119700
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="secuencia-agregar-ítem"><a class="anchor" href="#secuencia-agregar-ítem"></a>Secuencia (Agregar ítem)</h2>
+<div class="sectionbody">
+<div class="imageblock kroki">
+<div class="content">
+<img src="_images/diag-ac266dfec17ffc08ffd8621fb0434e0e0b8f6c4e.svg" alt="Diagram">
+</div>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="base_de_datos.html">Diseño de Base de Datos</a></span>
+  <span class="next"><a href="costos.html">Estimación de Costos</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+<script src="../../_/js/vendor/lunr.js"></script>
+<script src="../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../.." data-snippet-length="100" data-stylesheet="../../_/css/search.css"></script>
+<script async src="../../search-index.js"></script>
+  </body>
+</html>

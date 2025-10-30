@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Diseño de Base de Datos (Carro de Compra) :: Example Documentation</title>
+    <link rel="canonical" href="https://ninjascl.github.io/antora-docs-bootstrap/game-store-docs/1/base_de_datos.html">
+    <link rel="prev" href="servidor.html">
+    <link rel="next" href="endpoint_rest.html">
+    <meta name="generator" content="Antora 3.1.10">
+    <link rel="stylesheet" href="../../_/css/site.css">
+    <link rel="stylesheet" href="../../_/js/vendor/styles/monokai.css">  </head>
+  <body class="article">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://ninjascl.github.io/antora-docs-bootstrap">Example Documentation</a>
+      <div class="navbar-item search hide-for-print">
+        <div id="search-field" class="field">
+          <input id="search-input" type="text" placeholder="Buscar">
+        </div>
+      </div>
+      <button class="navbar-burger" aria-controls="topbar-nav" aria-expanded="false" aria-label="Menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <!--
+    <div id="topbar-nav" class="navbar-menu">
+      <div class="navbar-end">
+        <a class="navbar-item" href="#">Home</a>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Products</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Product A</a>
+            <a class="navbar-item" href="#">Product B</a>
+            <a class="navbar-item" href="#">Product C</a>
+          </div>
+        </div>
+        <div class="navbar-item has-dropdown is-hoverable">
+          <a class="navbar-link" href="#">Services</a>
+          <div class="navbar-dropdown">
+            <a class="navbar-item" href="#">Service A</a>
+            <a class="navbar-item" href="#">Service B</a>
+            <a class="navbar-item" href="#">Service C</a>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <span class="control">
+            <a class="button is-primary" href="#">Download</a>
+          </span>
+        </div>
+      </div>
+    </div>
+    -->
+  </nav>
+</header>
+<div class="body">
+<div class="nav-container" data-component="game-store-docs" data-version="1">
+  <aside class="nav">
+    <div class="panels">
+<div class="nav-panel-menu is-active" data-panel="menu">
+  <nav class="nav-menu">
+    <button class="nav-menu-toggle" aria-label="Toggle expand/collapse all" style="display: none"></button>
+    <h3 class="title"><a href="index.html">Game Store - Documentación</a></h3>
+<ul class="nav-list">
+  <li class="nav-item" data-depth="0">
+<ul class="nav-list">
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="index.html">Resumen</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="servidor.html">Selección de Servidor</a>
+  </li>
+  <li class="nav-item is-current-page" data-depth="1">
+    <a class="nav-link" href="base_de_datos.html">Diseño de Base de Datos</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="endpoint_rest.html">Diseño de Endpoint REST</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="costos.html">Estimación de Costos</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="backend.html">Selección Tecnológica Backend</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="frontend.html">Selección Tecnológica Frontend</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="equipo.html">Profesionales necesarios</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="plazos.html">Estimación de Plazos</a>
+  </li>
+  <li class="nav-item" data-depth="1">
+    <a class="nav-link" href="diseno_sistemas.html">Diseño de Sistemas</a>
+  </li>
+</ul>
+  </li>
+</ul>
+  </nav>
+</div>
+<div class="nav-panel-explore" data-panel="explore">
+  <div class="context">
+    <span class="title">Game Store - Documentación</span>
+    <span class="version">1</span>
+  </div>
+  <ul class="components">
+    <li class="component is-current">
+      <div class="title"><a href="index.html">Game Store - Documentación</a></div>
+      <ul class="versions">
+        <li class="version is-current is-latest">
+          <a href="index.html">1</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+    </div>
+  </aside>
+</div>
+<main class="article">
+<div class="toolbar" role="navigation">
+<button class="nav-toggle"></button>
+  <a href="index.html" class="home-link"></a>
+<nav class="breadcrumbs" aria-label="breadcrumbs">
+  <ul>
+    <li><a href="index.html">Game Store - Documentación</a></li>
+    <li><a href="base_de_datos.html">Diseño de Base de Datos</a></li>
+  </ul>
+</nav>
+<div class="edit-this-page"><a href="file:///antora/./modules/ROOT/pages/base_de_datos.adoc">Edit this Page</a></div>
+</div>
+  <div class="content">
+<aside class="toc sidebar" data-title="Contenidos" data-levels="2">
+  <div class="toc-menu"></div>
+</aside>
+<article class="doc">
+<h1 class="page">Diseño de Base de Datos (Carro de Compra)</h1>
+<div id="toc" class="toc">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#modelo-tablas-relevantes">Modelo (tablas relevantes)</a></li>
+<li><a href="#diagrama-uml-de-tablasrelaciones">Diagrama (UML de tablas/relaciones)</a></li>
+<li><a href="#reglas">Reglas</a></li>
+</ul>
+</div>
+<div class="sect1">
+<h2 id="modelo-tablas-relevantes"><a class="anchor" href="#modelo-tablas-relevantes"></a>Modelo (tablas relevantes)</h2>
+<div class="sectionbody">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Tabla</th>
+<th class="tableblock halign-left valign-top">Campos (tipo)</th>
+<th class="tableblock halign-left valign-top">Notas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">products</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id (PK), title (string), sku (string, único), price_cents (int), stock (int), image_url (string), inserted_at, updated_at</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Catálogo simple; precios en centavos CLP.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">carts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id (PK), token (uuid único), status (string: "open"/"closed"), inserted_at, updated_at</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Un carro por token (cliente/visita).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">cart_items</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">id (PK), cart_id (FK&#8594;carts), product_id (FK&#8594;products), quantity (int), inserted_at, updated_at</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ítems del carro con cantidad.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="diagrama-uml-de-tablasrelaciones"><a class="anchor" href="#diagrama-uml-de-tablasrelaciones"></a>Diagrama (UML de tablas/relaciones)</h2>
+<div class="sectionbody">
+<div class="imageblock kroki">
+<div class="content">
+<img src="_images/diag-9d4174c9a91eba5c8f1732e10d3d5fd3a7ca2f9a.svg" alt="Diagram">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="reglas"><a class="anchor" href="#reglas"></a>Reglas</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><code>cart.status="closed"</code> bloquea modificaciones posteriores.</p>
+</li>
+<li>
+<p><code>quantity &gt;= 1</code>.</p>
+</li>
+<li>
+<p>Validación de stock al agregar/actualizar (no sobrepasar <code>products.stock</code>).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<nav class="pagination">
+  <span class="prev"><a href="servidor.html">Selección de Servidor</a></span>
+  <span class="next"><a href="endpoint_rest.html">Diseño de Endpoint REST</a></span>
+</nav>
+</article>
+  </div>
+</main>
+</div>
+<footer class="footer">
+  <p>This page was built using the Antora default UI.</p>
+  <p>The source code for this UI is licensed under the terms of the MPL-2.0 license.</p>
+</footer>
+<script id="site-script" src="../../_/js/site.js" data-ui-root-path="../../_"></script>
+<script async src="../../_/js/vendor/highlight.js"></script>
+<script src="../../_/js/vendor/lunr.js"></script>
+<script src="../../_/js/search-ui.js" id="search-ui-script" data-site-root-path="../.." data-snippet-length="100" data-stylesheet="../../_/css/search.css"></script>
+<script async src="../../search-index.js"></script>
+  </body>
+</html>

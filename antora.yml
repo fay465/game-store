@@ -1,5 +1,5 @@
-name: ROOT
-version: ~
-title: Example Documentation
+name: game-store-docs
+version: 1.0
+title: Game Store - Documentación
 nav:
   - modules/ROOT/nav.adoc
