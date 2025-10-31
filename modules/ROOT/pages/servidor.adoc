@@ -13,7 +13,7 @@ Este proyecto es un e-commerce de venta de videojuegos. Para la **implementació
 * **Stack de aplicación:** Phoenix (API REST + LiveView).
 * **Objetivo:** servicio confiable, con monitoreo básico, respaldo de datos y capacidad de escalar sin rehacer todo.
 
-== Decisión (resumen claro)
+== Decisión
 
 Desplegar la aplicación en un **VPS (servidor virtual privado)** con Linux, detrás de un **proxy** (Nginx o Caddy) y con **PostgreSQL gestionado** (Neon, Supabase o Render). Al frente, usar **Cloudflare** para DNS/TLS y caché de contenido estático cuando sea útil.
 
@@ -21,7 +21,7 @@ Desplegar la aplicación en un **VPS (servidor virtual privado)** con Linux, det
 * La **base de datos** la gestiona un proveedor con **backups automáticos**, restauraciones y rendimiento adecuados.
 * **Cloudflare** facilita HTTPS, protección y CDN para recursos estáticos.
 
-== Arquitectura operativa (alto nivel)
+== Arquitectura operativa
 
 * **Dominio y HTTPS:** el dominio apunta a **Cloudflare**. El tráfico HTTPS llega a nuestro VPS.
 * **Proxy en el VPS:** **Nginx** o **Caddy** recibe las peticiones y las envía a Phoenix (por ejemplo, `127.0.0.1:4000`).
@@ -29,7 +29,7 @@ Desplegar la aplicación en un **VPS (servidor virtual privado)** con Linux, det
 * **Base de datos:** **PostgreSQL gestionado** con conexión TLS y credenciales seguras.
 * **Backups y observabilidad:** DB con copias automáticas; logs del proxy y de la app; métricas básicas cuando se requiera.
 
-== Diagrama (alto nivel)
+== Diagrama
 
 [plantuml, despliegue-produccion, format=svg]
 ....
@@ -92,7 +92,7 @@ APP --> PG : Conn. TLS
 *Total estimado:* **30–52 USD/mes**.  
 Si el pico de 100k se vuelve sostenido, se puede **duplicar la app** (otro VPS similar: +12–20 USD) y subir el **plan de Postgres** (+10–30 USD aprox.).
 
-== Alternativas consideradas (alto nivel)
+== Alternativas consideradas
 
 * **PaaS (Fly.io, Render, Railway):**
   * **Pros:** despliegue simple y escalado rápido.
