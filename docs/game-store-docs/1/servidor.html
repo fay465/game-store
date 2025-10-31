@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Selección de Servidor :: Example Documentation</title>
+    <title>Selección de servidor y despliegue (visión de producción) :: Game Store - Documentación</title>
     <link rel="canonical" href="https://ninjascl.github.io/antora-docs-bootstrap/game-store-docs/1/servidor.html">
     <link rel="prev" href="index.html">
     <link rel="next" href="base_de_datos.html">
@@ -14,7 +14,7 @@
 <header class="header">
   <nav class="navbar">
     <div class="navbar-brand">
-      <a class="navbar-item" href="https://ninjascl.github.io/antora-docs-bootstrap">Example Documentation</a>
+      <a class="navbar-item" href="https://ninjascl.github.io/antora-docs-bootstrap">Game Store - Documentación</a>
       <div class="navbar-item search hide-for-print">
         <div id="search-field" class="field">
           <input id="search-input" type="text" placeholder="Buscar">
@@ -138,143 +138,281 @@
   <div class="toc-menu"></div>
 </aside>
 <article class="doc">
-<h1 class="page">Selección de Servidor</h1>
+<h1 class="page">Selección de servidor y despliegue (visión de producción)</h1>
 <div id="toc" class="toc">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#requerimientos-y-supuestos">Requerimientos y supuestos</a></li>
-<li><a href="#alternativas-evaluadas-alto-nivel">Alternativas evaluadas (alto nivel)</a></li>
-<li><a href="#opción-propuesta-mvp">Opción propuesta (MVP)</a></li>
-<li><a href="#despliegue-pasos-clave">Despliegue (pasos clave)</a></li>
-<li><a href="#observabilidad-mínimo">Observabilidad (mínimo)</a></li>
+<li><a href="#contexto-y-requisitos">Contexto y requisitos</a></li>
+<li><a href="#decisión-resumen-claro">Decisión (resumen claro)</a></li>
+<li><a href="#arquitectura-operativa-alto-nivel">Arquitectura operativa (alto nivel)</a></li>
+<li><a href="#diagrama-alto-nivel">Diagrama (alto nivel)</a></li>
+<li><a href="#costeo-mensual-estimado-referencial">Costeo mensual estimado (referencial)</a></li>
+<li><a href="#alternativas-consideradas-alto-nivel">Alternativas consideradas (alto nivel)</a></li>
+<li><a href="#consecuencias-qué-implica-esta-elección">Consecuencias (qué implica esta elección)</a>
+<ul class="sectlevel2">
+<li><a href="#positivas">Positivas</a></li>
+<li><a href="#negativas">Negativas</a></li>
+</ul>
+</li>
+<li><a href="#plan-de-crecimiento-si-el-tráfico-sube">Plan de crecimiento (si el tráfico sube)</a></li>
+<li><a href="#riesgos-y-mitigaciones">Riesgos y mitigaciones</a></li>
 </ul>
 </div>
 <div class="sect1">
-<h2 id="requerimientos-y-supuestos"><a class="anchor" href="#requerimientos-y-supuestos"></a>Requerimientos y supuestos</h2>
+<h2 id="contexto-y-requisitos"><a class="anchor" href="#contexto-y-requisitos"></a>Contexto y requisitos</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Este proyecto es un e-commerce de venta de videojuegos. Para la <strong>implementación formal</strong>, debemos pensar en operación estable, seguridad y una ruta de crecimiento razonable, con:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Presupuesto:</strong> medio.</p>
+</li>
+<li>
+<p><strong>Carga base:</strong> ~10.000 transacciones/día.</p>
+</li>
+<li>
+<p><strong>Pico:</strong> hasta ~100.000 transacciones/día.</p>
+</li>
+<li>
+<p><strong>Stack de aplicación:</strong> Phoenix (API REST + LiveView).</p>
+</li>
+<li>
+<p><strong>Objetivo:</strong> servicio confiable, con monitoreo básico, respaldo de datos y capacidad de escalar sin rehacer todo.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="decisión-resumen-claro"><a class="anchor" href="#decisión-resumen-claro"></a>Decisión (resumen claro)</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Desplegar la aplicación en un <strong>VPS (servidor virtual privado)</strong> con Linux, detrás de un <strong>proxy</strong> (Nginx o Caddy) y con <strong>PostgreSQL gestionado</strong> (Neon, Supabase o Render). Al frente, usar <strong>Cloudflare</strong> para DNS/TLS y caché de contenido estático cuando sea útil.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>El <strong>VPS</strong> corre Phoenix (web + API) y el proxy.</p>
+</li>
+<li>
+<p>La <strong>base de datos</strong> la gestiona un proveedor con <strong>backups automáticos</strong>, restauraciones y rendimiento adecuados.</p>
+</li>
+<li>
+<p><strong>Cloudflare</strong> facilita HTTPS, protección y CDN para recursos estáticos.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="arquitectura-operativa-alto-nivel"><a class="anchor" href="#arquitectura-operativa-alto-nivel"></a>Arquitectura operativa (alto nivel)</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p>Tráfico: 10k transacciones/día, pico 100k/día.</p>
+<p><strong>Dominio y HTTPS:</strong> el dominio apunta a <strong>Cloudflare</strong>. El tráfico HTTPS llega a nuestro VPS.</p>
 </li>
 <li>
-<p>Nivel de presupuesto: medio.</p>
+<p><strong>Proxy en el VPS:</strong> <strong>Nginx</strong> o <strong>Caddy</strong> recibe las peticiones y las envía a Phoenix (por ejemplo, <code>127.0.0.1:4000</code>).</p>
 </li>
 <li>
-<p>El proyecto debe correr en <strong>localhost</strong> (mínimo) y luego <strong>desplegable</strong>.</p>
+<p><strong>Aplicación Phoenix:</strong> corre como servicio <code>systemd</code> (arranque automático y reinicio si falla).</p>
+</li>
+<li>
+<p><strong>Base de datos:</strong> <strong>PostgreSQL gestionado</strong> con conexión TLS y credenciales seguras.</p>
+</li>
+<li>
+<p><strong>Backups y observabilidad:</strong> DB con copias automáticas; logs del proxy y de la app; métricas básicas cuando se requiera.</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="alternativas-evaluadas-alto-nivel"><a class="anchor" href="#alternativas-evaluadas-alto-nivel"></a>Alternativas evaluadas (alto nivel)</h2>
+<h2 id="diagrama-alto-nivel"><a class="anchor" href="#diagrama-alto-nivel"></a>Diagrama (alto nivel)</h2>
+<div class="sectionbody">
+<div class="imageblock kroki">
+<div class="content">
+<img src="_images/despliegue-produccion-de9fdc525e64aaaddf310f1ddbd0e200b554284f.svg" alt="despliegue-produccion">
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="costeo-mensual-estimado-referencial"><a class="anchor" href="#costeo-mensual-estimado-referencial"></a>Costeo mensual estimado (referencial)</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
+<col style="width: 27.2727%;">
+<col style="width: 27.2727%;">
+<col style="width: 18.1818%;">
+<col style="width: 27.2728%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">Alternativa</th>
-<th class="tableblock halign-left valign-top">Pros</th>
-<th class="tableblock halign-left valign-top">Contras</th>
-<th class="tableblock halign-left valign-top">Cuándo usar</th>
+<th class="tableblock halign-left valign-top">Componente</th>
+<th class="tableblock halign-left valign-top">Plan sugerido</th>
+<th class="tableblock halign-left valign-top">USD/mes</th>
+<th class="tableblock halign-left valign-top">Comentario</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>VPS único</strong> (Hetzner, DO, Vultr)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bajo costo, control total, fácil <strong>systemd</strong> y Nginx</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Escalado manual, HA limitada</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MVP, presupuesto acotado</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>VPS App</strong> (2 vCPU / 4 GB / 60–80 GB SSD)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Hetzner / DO / Vultr equivalente</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>12–20</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Phoenix + proxy; escalable a 2 instancias si hace falta</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>PaaS</strong> (Fly.io, Render)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Despliegue fácil, escalado sencillo</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Costos variables, cold starts (algunos planes)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Cuando prima simplicidad de DevOps</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>PostgreSQL gestionado</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Neon / Supabase / Render (Basic/Small)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>15–25</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Backups automáticos, restauración según proveedor</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>K8s</strong> (GKE/EKS/AKS)</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Escala/HA excelente</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Complejidad y costo altos</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">No recomendado para MVP académico</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Dominio</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">TLD común (.com, etc.)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>1–2</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Costo prorrateado mensual</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>Backups extra</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Snapshots VPS semanales</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>2–5</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Opcional (la DB ya tiene backups)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>CDN/TLS</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Cloudflare (Free)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>0</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">DNS, HTTPS y protección básica</p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p><strong>Total estimado:</strong> <strong>30–52 USD/mes</strong>.
+Si el pico de 100k se vuelve sostenido, se puede <strong>duplicar la app</strong> (otro VPS similar: +12–20 USD) y subir el <strong>plan de Postgres</strong> (+10–30 USD aprox.).</p>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="opción-propuesta-mvp"><a class="anchor" href="#opción-propuesta-mvp"></a>Opción propuesta (MVP)</h2>
+<h2 id="alternativas-consideradas-alto-nivel"><a class="anchor" href="#alternativas-consideradas-alto-nivel"></a>Alternativas consideradas (alto nivel)</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p><strong>VPS único</strong> con:</p>
+<p><strong>PaaS (Fly.io, Render, Railway):</strong></p>
+</li>
+<li>
+<p><strong>Pros:</strong> despliegue simple y escalado rápido.</p>
+</li>
+<li>
+<p><strong>Contras:</strong> costos variables que pueden crecer; algunos planes “duermen” la app sin tráfico.</p>
+</li>
+<li>
+<p><strong>Uso:</strong> cuando la <strong>simplicidad de DevOps</strong> es prioritaria.</p>
+</li>
+<li>
+<p><strong>Kubernetes (GKE/EKS/AKS):</strong></p>
+</li>
+<li>
+<p><strong>Pros:</strong> excelente para alta disponibilidad y escalado masivo.</p>
+</li>
+<li>
+<p><strong>Contras:</strong> <strong>complejo</strong> de operar y con costo base <strong>alto</strong>.</p>
+</li>
+<li>
+<p><strong>Uso:</strong> no recomendado para <strong>MVP académico</strong> o presupuesto medio.</p>
+</li>
+<li>
+<p><strong>SQLite todo-en-uno en el VPS:</strong></p>
+</li>
+<li>
+<p><strong>Pros:</strong> simple para prototipo.</p>
+</li>
+<li>
+<p><strong>Contras:</strong> limita concurrencia, backups y escalado a múltiples instancias.</p>
+</li>
+<li>
+<p><strong>Uso:</strong> solo en desarrollo/demos locales.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="consecuencias-qué-implica-esta-elección"><a class="anchor" href="#consecuencias-qué-implica-esta-elección"></a>Consecuencias (qué implica esta elección)</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="positivas"><a class="anchor" href="#positivas"></a>Positivas</h3>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Nginx</strong> como <strong>reverse proxy</strong> (TLS, HTTP/2)</p>
+<p>Mantenemos <strong>costos controlados</strong> sin perder HTTPS, estabilidad y backups.</p>
 </li>
 <li>
-<p><strong>Phoenix release</strong> (mix release) como servicio <strong>systemd</strong></p>
+<p>La <strong>base de datos gestionada</strong> reduce el riesgo de pérdida de datos y simplifica restauraciones.</p>
 </li>
 <li>
-<p><strong>SQLite</strong> en disco local (requisito curso)</p>
-</li>
-<li>
-<p><strong>Certbot</strong> (Let’s Encrypt) o Cloudflare Full (Strict)</p>
+<p>Podemos <strong>crecer gradualmente</strong>: 1 instancia → 2 instancias → considerar PaaS si se necesitan regiones múltiples.</p>
 </li>
 </ul>
 </div>
+</div>
+<div class="sect2">
+<h3 id="negativas"><a class="anchor" href="#negativas"></a>Negativas</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>El <strong>escalado horizontal</strong> en VPS requiere trabajo (balanceo y, con LiveView, PubSub/Redis si hay varias réplicas).</p>
+</li>
+<li>
+<p>Hay <strong>más piezas</strong> a conocer (proxy, variables de entorno, <code>systemd</code>) en comparación con un PaaS.</p>
+</li>
+<li>
+<p><strong>Postgres gestionado</strong> cuesta más que “tenerlo en la misma máquina”, pero aporta valor (seguridad y backups).</p>
 </li>
 </ul>
-</div>
-<div class="paragraph">
-<p>Arquitectura (simplificada):</p>
-</div>
-<div class="imageblock kroki">
-<div class="content">
-<img src="_images/diag-649a4f19502f374f9a44fdd30b55a748e4b4fa86.svg" alt="Diagram">
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="despliegue-pasos-clave"><a class="anchor" href="#despliegue-pasos-clave"></a>Despliegue (pasos clave)</h2>
+<h2 id="plan-de-crecimiento-si-el-tráfico-sube"><a class="anchor" href="#plan-de-crecimiento-si-el-tráfico-sube"></a>Plan de crecimiento (si el tráfico sube)</h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>Build release: <code>MIX_ENV=prod mix release</code></p>
+<p><strong>Corto plazo:</strong> 1 instancia Phoenix + Postgres Basic; logs y verificación de uptime.</p>
 </li>
 <li>
-<p>Service: unit <strong>systemd</strong> que ejecute <code>{_build/prod/rel/game_store/bin/game_store start}</code></p>
+<p><strong>Demanda sostenida:</strong> 2 instancias Phoenix detrás del proxy. Revisar sesiones/PubSub (Redis) para LiveView distribuido.</p>
 </li>
 <li>
-<p>Nginx: <code>proxy_pass <a href="http://127.0.0.1:4000" class="bare">http://127.0.0.1:4000</a>;</code> + TLS.</p>
+<p><strong>Cargas más altas:</strong> subir plan de Postgres (CPU/RAM/IOPS) y reforzar CDN para estáticos.</p>
 </li>
 <li>
-<p>Variables entorno (secret_key_base, host, etc.).</p>
+<p><strong>Globalización o picos mayores:</strong> evaluar <strong>PaaS</strong> (p. ej., Fly.io) para réplicas en varias regiones con menos esfuerzo operativo.</p>
 </li>
 </ol>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="observabilidad-mínimo"><a class="anchor" href="#observabilidad-mínimo"></a>Observabilidad (mínimo)</h2>
+<h2 id="riesgos-y-mitigaciones"><a class="anchor" href="#riesgos-y-mitigaciones"></a>Riesgos y mitigaciones</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
 <li>
-<p>Logs (journald), <strong>healthcheck</strong> simple <code>/api/health</code>.</p>
+<p><strong>Picos mayores a lo previsto:</strong> tener lista una <strong>segunda instancia</strong> y/o imagen para escalar rápido; revisar límites del plan de Postgres.</p>
 </li>
 <li>
-<p>Backups BD (snapshot diario del archivo SQLite).</p>
+<p><strong>Errores de configuración TLS/DNS:</strong> usar plantillas recomendadas (Cloudflare + Nginx) y validar con herramientas externas.</p>
+</li>
+<li>
+<p><strong>Secretos expuestos:</strong> no subir claves al repo; manejar variables de entorno fuera del control de versiones y con permisos mínimos.</p>
 </li>
 </ul>
 </div>

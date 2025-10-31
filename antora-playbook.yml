@@ -1,5 +1,5 @@
 site:
-  title: Example Documentation
+  title: Game Store - Documentación
   url: https://ninjascl.github.io/antora-docs-bootstrap
   start_page: "game-store-docs::index.adoc"
 

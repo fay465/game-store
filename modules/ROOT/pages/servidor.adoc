@@ -1,0 +1,137 @@
+= Selección de servidor y despliegue (visión de producción)
+:page-tags: infraestructura, despliegue, costos, cloud
+:toc:
+:toclevels: 2
+
+== Contexto y requisitos
+
+Este proyecto es un e-commerce de venta de videojuegos. Para la **implementación formal**, debemos pensar en operación estable, seguridad y una ruta de crecimiento razonable, con:
+
+* **Presupuesto:** medio.
+* **Carga base:** ~10.000 transacciones/día.
+* **Pico:** hasta ~100.000 transacciones/día.
+* **Stack de aplicación:** Phoenix (API REST + LiveView).
+* **Objetivo:** servicio confiable, con monitoreo básico, respaldo de datos y capacidad de escalar sin rehacer todo.
+
+== Decisión (resumen claro)
+
+Desplegar la aplicación en un **VPS (servidor virtual privado)** con Linux, detrás de un **proxy** (Nginx o Caddy) y con **PostgreSQL gestionado** (Neon, Supabase o Render). Al frente, usar **Cloudflare** para DNS/TLS y caché de contenido estático cuando sea útil.
+
+* El **VPS** corre Phoenix (web + API) y el proxy.
+* La **base de datos** la gestiona un proveedor con **backups automáticos**, restauraciones y rendimiento adecuados.
+* **Cloudflare** facilita HTTPS, protección y CDN para recursos estáticos.
+
+== Arquitectura operativa (alto nivel)
+
+* **Dominio y HTTPS:** el dominio apunta a **Cloudflare**. El tráfico HTTPS llega a nuestro VPS.
+* **Proxy en el VPS:** **Nginx** o **Caddy** recibe las peticiones y las envía a Phoenix (por ejemplo, `127.0.0.1:4000`).
+* **Aplicación Phoenix:** corre como servicio `systemd` (arranque automático y reinicio si falla).
+* **Base de datos:** **PostgreSQL gestionado** con conexión TLS y credenciales seguras.
+* **Backups y observabilidad:** DB con copias automáticas; logs del proxy y de la app; métricas básicas cuando se requiera.
+
+== Diagrama (alto nivel)
+
+[plantuml, despliegue-produccion, format=svg]
+....
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam defaultFontName Roboto
+
+actor "Usuarios" as U
+
+node "Cloudflare\n(DNS / TLS / CDN)" as CF
+
+node "VPS App\n(2 vCPU / 4 GB / Debian/Ubuntu)" as VPS {
+  node "Reverse Proxy\n(Nginx/Caddy)" as RP
+  node "Phoenix App\n(API + LiveView)" as APP
+}
+
+database "PostgreSQL gestionado\n(Neon / Supabase / Render)" as PG
+
+U --> CF : HTTPS
+CF --> RP : HTTPS (TLS)
+RP --> APP : HTTP interno
+APP --> PG : Conn. TLS
+
+@enduml
+....
+
+== Costeo mensual estimado (referencial)
+
+[cols="3,3,2,3", options="header"]
+|===
+| Componente | Plan sugerido | USD/mes | Comentario
+
+| **VPS App** (2 vCPU / 4 GB / 60–80 GB SSD)
+| Hetzner / DO / Vultr equivalente
+| **12–20**
+| Phoenix + proxy; escalable a 2 instancias si hace falta
+
+| **PostgreSQL gestionado**
+| Neon / Supabase / Render (Basic/Small)
+| **15–25**
+| Backups automáticos, restauración según proveedor
+
+| **Dominio**
+| TLD común (.com, etc.)
+| **1–2**
+| Costo prorrateado mensual
+
+| **Backups extra**
+| Snapshots VPS semanales
+| **2–5**
+| Opcional (la DB ya tiene backups)
+
+| **CDN/TLS**
+| Cloudflare (Free)
+| **0**
+| DNS, HTTPS y protección básica
+|===
+
+*Total estimado:* **30–52 USD/mes**.  
+Si el pico de 100k se vuelve sostenido, se puede **duplicar la app** (otro VPS similar: +12–20 USD) y subir el **plan de Postgres** (+10–30 USD aprox.).
+
+== Alternativas consideradas (alto nivel)
+
+* **PaaS (Fly.io, Render, Railway):**
+  * **Pros:** despliegue simple y escalado rápido.
+  * **Contras:** costos variables que pueden crecer; algunos planes “duermen” la app sin tráfico.
+  * **Uso:** cuando la **simplicidad de DevOps** es prioritaria.
+
+* **Kubernetes (GKE/EKS/AKS):**
+  * **Pros:** excelente para alta disponibilidad y escalado masivo.
+  * **Contras:** **complejo** de operar y con costo base **alto**.
+  * **Uso:** no recomendado para **MVP académico** o presupuesto medio.
+
+* **SQLite todo-en-uno en el VPS:**
+  * **Pros:** simple para prototipo.
+  * **Contras:** limita concurrencia, backups y escalado a múltiples instancias.
+  * **Uso:** solo en desarrollo/demos locales.
+
+== Consecuencias (qué implica esta elección)
+
+=== Positivas
+
+* Mantenemos **costos controlados** sin perder HTTPS, estabilidad y backups.
+* La **base de datos gestionada** reduce el riesgo de pérdida de datos y simplifica restauraciones.
+* Podemos **crecer gradualmente**: 1 instancia → 2 instancias → considerar PaaS si se necesitan regiones múltiples.
+
+=== Negativas
+
+* El **escalado horizontal** en VPS requiere trabajo (balanceo y, con LiveView, PubSub/Redis si hay varias réplicas).
+* Hay **más piezas** a conocer (proxy, variables de entorno, `systemd`) en comparación con un PaaS.
+* **Postgres gestionado** cuesta más que “tenerlo en la misma máquina”, pero aporta valor (seguridad y backups).
+
+== Plan de crecimiento (si el tráfico sube)
+
+. **Corto plazo:** 1 instancia Phoenix + Postgres Basic; logs y verificación de uptime.
+. **Demanda sostenida:** 2 instancias Phoenix detrás del proxy. Revisar sesiones/PubSub (Redis) para LiveView distribuido.
+. **Cargas más altas:** subir plan de Postgres (CPU/RAM/IOPS) y reforzar CDN para estáticos.
+. **Globalización o picos mayores:** evaluar **PaaS** (p. ej., Fly.io) para réplicas en varias regiones con menos esfuerzo operativo.
+
+== Riesgos y mitigaciones
+
+* **Picos mayores a lo previsto:** tener lista una **segunda instancia** y/o imagen para escalar rápido; revisar límites del plan de Postgres.
+* **Errores de configuración TLS/DNS:** usar plantillas recomendadas (Cloudflare + Nginx) y validar con herramientas externas.
+* **Secretos expuestos:** no subir claves al repo; manejar variables de entorno fuera del control de versiones y con permisos mínimos.
