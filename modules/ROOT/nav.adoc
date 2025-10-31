@@ -2,7 +2,6 @@
 * xref:servidor.adoc[Selección de Servidor]
 * xref:base_de_datos.adoc[Diseño de Base de Datos]
 * xref:endpoint_rest.adoc[Diseño de Endpoint REST]
-* xref:costos.adoc[Estimación de Costos]
 * xref:backend.adoc[Selección Tecnológica Backend]
 * xref:frontend.adoc[Selección Tecnológica Frontend]
 * xref:equipo.adoc[Profesionales necesarios]
